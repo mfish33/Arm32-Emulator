@@ -43,6 +43,8 @@ public class Asciz {
         }
     };
 
+    // Code to chunk array
+    // Taken from https://stackoverflow.com/questions/27857011/how-to-split-a-string-array-into-small-chunk-arrays-in-java
     public static byte[][] splitArray(byte[] arrayToSplit, int chunkSize){
         if(chunkSize<=0){
             return null;  // just in case :)
