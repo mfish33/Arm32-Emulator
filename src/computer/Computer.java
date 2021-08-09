@@ -7,7 +7,7 @@ public class Computer {
     public final Register[] registers = new Register[16];
     public final MemoryController memory = new MemoryController();
     public final Cpsr cpsr = new Cpsr();
-    public int instructionCount = 0;
+    public final Statistics statistics = Statistics.getInstance();
     private Instruction nextInstruction;
 
     public Computer() {
@@ -32,17 +32,17 @@ public class Computer {
         pc.increment(4);
         // Execute instruction
         nextInstruction.execute(this);
-        instructionCount++;
+        statistics.instructionExecuted();
         nextInstruction = (Instruction) memory.read(pc.get(), 4);
     }
 
     public void printState() {
-        var out = "";
+        StringBuilder out = new StringBuilder();
         for(int i = 0; i < registers.length; i++) {
-            out += "Register r" + ( i ) + ":" + registers[i].get() + "\n";
+            out.append("Register r").append(i).append(":").append(registers[i].get()).append("\n");
         }
         System.out.println(out);
-        System.out.println("executed " + instructionCount + " instructions");
+        statistics.print();
     }
 
     public boolean shouldBreak() {

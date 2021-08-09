@@ -16,7 +16,7 @@ public class ProgramMemory extends Chunk {
     public byte[] read(int location, int size)  throws MemoryAccessException {
         int accessPoint = location - baseAddress;
         if(accessPoint % 4 != 0 && size != 1) {
-            throw new MemoryAccessException("Reading into unaligned instruction data");
+            throw new MemoryAccessException("Reading into unaligned program data");
         }
         return Arrays.copyOfRange(rawMemory, accessPoint, accessPoint + size);
     }
@@ -24,6 +24,9 @@ public class ProgramMemory extends Chunk {
     @Override
     public void write(int location, byte[] data) throws MemoryAccessException {
         int accessPoint = location - baseAddress;
+        if(accessPoint % 4 != 0 && data.length != 1) {
+            throw new MemoryAccessException("Writing into unaligned program data");
+        }
         System.arraycopy(data, 0, rawMemory, accessPoint, data.length);
     }
 

@@ -5,6 +5,7 @@ import Utils.TriFunction;
 import computer.Computer;
 import computer.Conditional;
 import computer.Reg;
+import computer.Statistics;
 
 public class B extends LabelReplacementInstruction {
 
@@ -28,4 +29,25 @@ public class B extends LabelReplacementInstruction {
         }
         throw Instruction.badInput(parts);
     };
+
+    @Override
+    protected void instructionExecutedStatistics(Statistics statistics) {
+        if(conditional == Conditional.al) {
+            return;
+        }
+        if(numericalValue > 0) {
+            statistics.branchForward();
+        } else {
+            statistics.branchBackwards();
+        }
+    }
+
+    @Override
+    protected void instructionNotExecutedStatistics(Statistics statistics) {
+        if(numericalValue > 0) {
+            statistics.branchForwardsSkipped();
+        } else {
+            statistics.branchBackwardsSkipped();
+        }
+    }
 }

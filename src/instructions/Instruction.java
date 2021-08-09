@@ -3,6 +3,7 @@ import Parser.InvalidInputException;
 import computer.Computer;
 import computer.Conditional;
 import computer.Reg;
+import computer.Statistics;
 import org.javatuples.Pair;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -18,8 +19,10 @@ public abstract class Instruction {
 
     public final void execute(Computer computer) throws Exception {
         if(!computer.cpsr.evaluateCondition(conditional)) {
+            instructionNotExecutedStatistics(computer.statistics);
             return;
         }
+        instructionExecutedStatistics(computer.statistics);
         if(!setCpsr) {
            doWork(computer);
            return;
@@ -27,6 +30,14 @@ public abstract class Instruction {
         computer.cpsr.reset();
         var result = doWork(computer);
         computer.cpsr.setSigns(result);
+    }
+
+    protected void instructionExecutedStatistics(Statistics statistics) {
+
+    }
+
+    protected void instructionNotExecutedStatistics(Statistics statistics) {
+
     }
 
     protected abstract int doWork(Computer computer) throws Exception;
@@ -46,7 +57,7 @@ public abstract class Instruction {
 
     public static InvalidInputException badInput(String[] parts) {
         var msg = Arrays.stream(parts).reduce((acc, p) -> acc + " " + p);
-        return new InvalidInputException("While creating instruction received bad input: " + msg.get());
+        return new InvalidInputException("While creating instruction received bad input: " + msg.orElse(""));
     }
 
     public static Optional<Integer> getImmediate(String s) {
@@ -73,7 +84,7 @@ public abstract class Instruction {
         if(immAllowed && regs.size() == numberOfArguments - 1) {
             var maybeImm = Instruction.getImmediate(parts[parts.length -1]);
             if(maybeImm.isPresent()) {
-                return new Pair<>(regs.toArray(Reg[]::new),Optional.of(maybeImm.get()));
+                return new Pair<>(regs.toArray(Reg[]::new), maybeImm);
             }
         }
         throw Instruction.badInput(parts);

@@ -23,7 +23,7 @@ public class Strb extends MemoryInstruction {
         var pointer = computer.registers[this.pointer.num];
         var offset = this.getOffset(computer);
         var address = pointer.get() + offset;
-        var data = Arrays.copyOfRange(Instruction.intToData(primary.get()), 0, 2);
+        var data = Arrays.copyOfRange(Instruction.intToData(primary.get()), 0, 1);
         computer.memory.write(address + 3, data);
         return 0;
     }
