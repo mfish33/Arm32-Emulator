@@ -51,8 +51,8 @@ public abstract class Instruction {
         return ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(myInteger).array();
     }
 
-    public static int dataToInt(byte [] byteBarray){
-        return ByteBuffer.wrap(byteBarray).order(ByteOrder.LITTLE_ENDIAN).getInt();
+    public static int dataToInt(byte [] byteArray){
+        return ByteBuffer.wrap(byteArray).order(ByteOrder.LITTLE_ENDIAN).getInt();
     }
 
     public static InvalidInputException badInput(String[] parts) {
